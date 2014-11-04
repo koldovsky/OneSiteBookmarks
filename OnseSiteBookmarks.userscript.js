@@ -4,14 +4,13 @@
 // @version      1
 // @description  Allows to create and use bookmarks for pages on the website available from home page of the website
 // @author       Vyacheslav Koldovskyy
-// @grant        none
 // @include      *
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
+// @downloadURL	https://raw.githubusercontent.com/koldovsky/OneSiteBookmarks/master/OnseSiteBookmarks.userscript.js
 // @grant       GM_getValue
 // @grant       GM_setValue
-// @grant 		GM_registerMenuCommand
+// @grant	GM_registerMenuCommand
 // ==/UserScript==
-// match        http://*/*
 
 
 /*
