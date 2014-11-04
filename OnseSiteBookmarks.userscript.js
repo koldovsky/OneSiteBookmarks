@@ -17,7 +17,7 @@
 // Create sample data
 var sampleData = {
     'www.google.com.ua' : {
-         rootPage: 'https://www.google.com.ua/?gfe_rd=cr&ei=d2ZWVISLLsSk8we6j4CADw&gws_rd=ssl',      
+         rootPage: 'https://www.google.com.ua/?gfe_rd=cr&ei=3sdYVLfYD8WBPYzngYgN',      
          links: {
 			'Analytics' : 'http://google.com/analytics/',
         	'GMail' : 'http://google.com/mail/',
@@ -34,6 +34,7 @@ var sampleData = {
 };
 saveWebSitesData(sampleData);
 */
+
 
 
 // Draggable support
@@ -70,11 +71,8 @@ $.fn.draggable = function(){
     return this;
 };
 
-
 GM_registerMenuCommand('Create site bookmarks here', createBookMarksHere);
 GM_registerMenuCommand('Add this page to site bookmarks', addPageToBookmarks);
-GM_registerMenuCommand('Debug: output site bookmarks to log', outputSitebookmarksToLog);
-
 
 var websites = getWebSites();
 
@@ -85,33 +83,27 @@ function createBookMarksHere() {
     if (currHostData) {
         currHostData.rootPage = currPage;
     }
-   saveWebSitesData(websites);
+    else {
+        var newHostData = {rootPage: currPage, links: {}};
+        websites[currHost] = newHostData;
+    }
+   saveWebSites(websites);
 }
 
 function addPageToBookmarks() {
     var currHost = window.location.host;
-  	var webSiteData = getWebSiteData(currHost);
+  	var webSiteData = websites[currHost];
     if (webSiteData) {
         var linkTitle = prompt('Please enter a caption for a link', '');
         if (linkTitle === '') return;
         webSiteData.links[linkTitle] = window.location.href;
-        saveWebSitesData(websites);
+        saveWebSites(websites);
     }
     else
     {
     	alert('First create root bookmarks page for ' + currHost);
     }
 }
-
-function outputSitebookmarksToLog() {
-	console.log(websites);    
-}
-        
-
-function getWebSites() {
-    return JSON.parse(GM_getValue('websites', '{}'));
-}
-
 
 var menu = '';
 if (websites) {
@@ -137,39 +129,17 @@ if (menu !== '')
   menuobj.style.left = '10px';
   menuobj.style.padding = '20px';
   menuobj.style.backgroundColor = '#fff';
+  menuobj.style.zIndex = '9999';
   menuobj.innerHTML = menu;
   body = document.getElementsByTagName('body')[0];
   body.appendChild(menuobj);
   $('#site_bookmarks_menu').draggable();
 }
 
-
-function addToWebSites(thePage) {    
-  	var webSites = getWebSites();
-    if (!webSites[thePage]) {
-        webSites[thePage] = {};
-    }
+function getWebSites() {
+    return JSON.parse(GM_getValue('websites', '{}'));
 }
 
-function getWebSiteData(webSiteId) {
-    if (websites) {
-       return websites[webSiteId];
-    }
-    return false;
-}
-
-function findWebSiteIdByPageName(pageName) {
-	var webSites = getWebSites();
-    for (var key in webSites) {
-    	    
-    }       
-}
-
-function setWebSiteData(webSiteId, data) {
-	var webSites = getWebSites();
-    webSites[webSiteId] = data;
-}
-
-function saveWebSitesData(websites) {
+function saveWebSites(websites) {
     GM_setValue('websites', JSON.stringify(websites));
 }
